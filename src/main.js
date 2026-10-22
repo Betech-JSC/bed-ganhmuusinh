@@ -1105,13 +1105,13 @@ function renderDirectoryView() {
         </div>
 
         <div class="hero-visual">
-          <div class="hero-banner-frame">
+          <div class="hero-banner-frame hero-visual-card">
             <img
               src="/branding/ganh-muu-sinh-banner-language-v2.jpg"
               alt="Gánh Mưu Sinh × Betech Digital"
               class="hero-banner-img"
-              width="720"
-              height="480"
+              width="640"
+              height="640"
             />
             <div class="hero-floating-card">
               <div class="hero-floating-logos">
