@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Gánh Mưu Sinh · Betech Digital Edition — Kết nối người bán với khách hàng",
+  "description": "G\u00e1nh M\u01b0u Sinh \u00b7 Betech Digital Edition \u2014 K\u1ebft n\u1ed1i ng\u01b0\u1eddi b\u00e1n v\u1edbi kh\u00e1ch h\u00e0ng",
   "scripts": {
-    "dev": "vite --port 4173 --host",
-    "build": "vite build",
+    "dev": "node init && vite --port 4173 --host",
+    "build": "node init && vite build",
     "preview": "node server.js",
-    "start": "node server.js",
+    "start": "node init && node server.js",
     "test": "node --test tests/app.test.js"
   },
   "dependencies": {

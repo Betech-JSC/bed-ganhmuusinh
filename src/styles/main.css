@@ -2614,18 +2614,30 @@
     font-weight: 500;
   }
 
-  .hero-banner-frame {
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  .hero-banner-frame,
+  .hero-visual-card {
     position: relative;
+    inline-size: 100%;
+    max-inline-size: 460px;
+    margin-inline: auto;
     border-radius: 22px;
     overflow: hidden;
     border: 1px solid rgba(239, 104, 32, 0.25);
     box-shadow: 0 14px 34px rgba(17, 25, 39, 0.12);
+    background: #FFFFFF;
   }
 
   .hero-banner-img {
     inline-size: 100%;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
+    block-size: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    background: #FFFFFF;
   }
 
   .hero-floating-card {
