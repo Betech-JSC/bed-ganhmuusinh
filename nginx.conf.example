@@ -1,0 +1,70 @@
+# ============================================================================
+# CẤU HÌNH NGINX CHO VPS - GÁNH MƯU SINH × BETECH DIGITAL
+# Hướng dẫn triển khai:
+# 1. Chạy `npm run build` để tạo thư mục `dist/` (chứa cả frontend bundle + api.php, config.php, seed-data.json).
+# 2. Trỏ `root` vào đường dẫn tuyệt đối của thư mục `dist` trên VPS (ví dụ: `/var/www/ganhmuusinh/dist`).
+# 3. Đảm bảo thư mục `/var/www/ganhmuusinh/dist/uploads` có quyền ghi bởi user chạy PHP-FPM (`chown -R www-data:www-data uploads`).
+# 4. Import `database/schema.sql` vào MySQL/MariaDB (hoặc chỉ cần tạo database và cấu hình `config.php`, `api.php` sẽ tự động tạo bảng và seed 200 gánh hàng trong lần chạy đầu tiên).
+# ============================================================================
+
+server {
+    listen 80;
+    server_name ganhmuusinh.yourdomain.com;
+
+    # Đường dẫn tới thư mục dist sau khi chạy `npm run build`
+    root /var/www/ganhmuusinh/dist;
+    index index.html index.php;
+
+    charset utf-8;
+    client_max_body_size 15M;
+
+    # 1. Phục vụ trực tiếp ảnh người dùng đã tải lên trong /uploads/
+    location ^~ /uploads/ {
+        try_files $uri /api.php?$query_string;
+        expires 30d;
+        add_header Cache-Control "public, max-age=2592000";
+    }
+
+    # 2. Phục vụ ảnh tĩnh có sẵn trong /media/ hoặc /avatars/, nếu chưa có thì chuyển về api.php xử lý
+    location ~ ^/(media|avatars)/ {
+        try_files $uri /api.php?$query_string;
+        expires 7d;
+        add_header Cache-Control "public, max-age=604800";
+    }
+
+    # 3. Định tuyến toàn bộ request Backend API (/api/*) và Auth (/auth/*) về api.php
+    location ~ ^/(api|auth)/ {
+        rewrite ^ /api.php last;
+    }
+
+    # 4. Thực thi PHP qua PHP-FPM (chỉ cho phép thực thi api.php, chặn truy cập config.php trực tiếp)
+    location = /config.php {
+        deny all;
+        return 404;
+    }
+
+    location = /seed-data.json {
+        deny all;
+        return 404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        # Thay đổi đường dẫn socket tùy phiên bản PHP trên VPS (php8.1-fpm, php8.2-fpm, php8.3-fpm...)
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    # 5. Cache tài nguyên tĩnh (JS, CSS, Fonts, Images)
+    location ~* \.(js|css|png|jpg|jpeg|gif|webp|svg|ico|woff|woff2|ttf)$ {
+        try_files $uri /api.php?$query_string;
+        expires 30d;
+        add_header Cache-Control "public, max-age=2592000";
+    }
+
+    # 6. SPA Fallback: Mọi đường dẫn giao diện (/submit-place, /account, /livelihoods/...) đều trả về index.html
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

@@ -1,0 +1,19 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Chặn truy cập trực tiếp vào file cấu hình và dữ liệu seed
+    RewriteRule ^(config\.php|seed-data\.json)$ - [F,L]
+
+    # Phục vụ trực tiếp nếu file vật lý tồn tại (ví dụ: /uploads/*.webp, /assets/*, /media/*)
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+
+    # Chuyển hướng các request API, Auth, Media, Uploads, Avatars về api.php
+    RewriteRule ^(api|auth|media|uploads|avatars)(/.*)?$ api.php [QSA,L]
+
+    # SPA Fallback: Mọi route giao diện khác đều trả về index.html
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.html [L]
+</IfModule>

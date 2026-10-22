@@ -1,0 +1,21 @@
+{
+  "name": "bed-ganhmuusinh",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Gánh Mưu Sinh · Betech Digital Edition — Kết nối người bán với khách hàng",
+  "scripts": {
+    "dev": "vite --port 4173 --host",
+    "build": "vite build",
+    "preview": "node server.js",
+    "start": "node server.js",
+    "test": "node --test tests/app.test.js"
+  },
+  "dependencies": {
+    "maplibre-gl": "^4.7.1",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "vite": "^5.4.10"
+  }
+}
